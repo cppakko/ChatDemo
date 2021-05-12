@@ -59,7 +59,7 @@ class ChatViewModel : ViewModel() {
             db.useMessage().insertMessage(MessageEntity(400L,System.currentTimeMillis(),1234L,1234567890L,MessageTypeEnum.StringMessage,"Test"))
             db.useMessage().insertMessage(MessageEntity(401L,System.currentTimeMillis(),1234L,1234567890L,MessageTypeEnum.StringMessage,"wei zaima"))
             db.useMessage().insertMessage(MessageEntity(402L,System.currentTimeMillis(),1234L,1234567890L, MessageTypeEnum.StringMessage,"红红火火恍恍惚惚嘿嘿嘿"))
-            db.useUser().insertUser(User(1234567890,"gg","https://i.loli.net/2021/05/12/AuL9OstUrclvo36.jpg"))
+            db.useUser().insertUser(User(1234567890,"gg","https://i.loli.net/2021/05/12/ryKszgY9dlX2S3a.jpg"))
             db.useMessage().insertMessage(MessageEntity(403L,System.currentTimeMillis(),1234567890L,1234L,MessageTypeEnum.StringMessage,"buzai cnm"))
             db.useMessage().insertMessage(MessageEntity(404L,System.currentTimeMillis(),1234L,1234567890L,MessageTypeEnum.ImageMessage,"https://i.loli.net/2021/05/12/ryKszgY9dlX2S3a.jpg"))
         }
