@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">ProjectChat</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_register">RegisterActivity</string>
+    <string name="title_activity_introduce">IntroduceActivity</string>
+    <string name="title_activity_chat_main">ChatMain</string>
+    <string name="title_activity_conversation_view">ConversationView</string>
+    <string name="title_activity_setting">Setting</string>
+    <string name="title_activity_friends_list">FriendsList</string>
+    <string name="title_activity_add_search">AddSearchActivity</string>
+</resources>
