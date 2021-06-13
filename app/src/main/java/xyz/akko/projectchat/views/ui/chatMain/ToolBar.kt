@@ -3,9 +3,7 @@ package xyz.akko.projectchat.views.ui.chatMain
 import android.content.Context
 import android.content.Intent
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
@@ -14,7 +12,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -24,7 +21,6 @@ import kotlinx.coroutines.launch
 import xyz.akko.projectchat.R
 import xyz.akko.projectchat.data.dao.User
 import xyz.akko.projectchat.utils.UtilObject
-import xyz.akko.projectchat.views.theme.GreenTheme
 import xyz.akko.projectchat.views.ui.addPage.AddSearchActivity
 import xyz.akko.projectchat.views.ui.friendslist.FriendsList
 import xyz.akko.projectchat.views.ui.info.UserInfo
@@ -48,18 +44,8 @@ fun ToolBar(scope: CoroutineScope, viewModel: ChatViewModel,context: Context) {
                     painter = rememberGlidePainter(request = UtilObject.myUser.IconUrl),
                     contentDescription = "user_icon",
                     modifier = Modifier
-                        .padding(horizontal = 10.dp)
+                        .padding(horizontal = 6.dp)
                         .clip(CircleShape)
-                        //TODO
-                        .border(
-                            shape = CircleShape,
-                            border = BorderStroke(
-                                width = 3.dp,
-                                brush = Brush.linearGradient(
-                                    colors = listOf(GreenTheme.Secondary, GreenTheme.Secondary)
-                                )
-                            )
-                        )
                 )
                 val user = remember {
                     mutableStateOf<User?>(null)

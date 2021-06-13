@@ -37,7 +37,7 @@ fun EmptyTopAppBar(title: String)
 
 @ExperimentalAnimationApi
 @Composable
-fun BaseAnimatedVisibility(state: Boolean,content: @Composable () -> Unit)
+fun BaseAnimatedVisibility(state: Boolean,content: @Composable AnimatedVisibilityScope.() -> Unit)
 {
     AnimatedVisibility(
         visible = state,
@@ -47,7 +47,8 @@ fun BaseAnimatedVisibility(state: Boolean,content: @Composable () -> Unit)
             expandFrom = Alignment.Top
         ) + fadeIn(initialAlpha = 0.3f),
         exit = slideOutVertically() + shrinkVertically() + fadeOut(),
-        content = content)
+        content = content
+    )
 }
 
 @Composable

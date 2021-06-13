@@ -57,7 +57,7 @@ fun Login(viewModel: LoginViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .background(Color(0xff80d6ff))
+            .background(Color(0xFFFFFFFF))
             .fillMaxHeight()
             .fillMaxWidth()
     ) {
