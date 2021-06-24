@@ -2,21 +2,13 @@ package xyz.akko.projectchat.data
 
 import kotlinx.serialization.Serializable
 
-//TODO REFACTOR
 @Serializable
-data class FriendListItem(
+data class ListItem (
     val IconUrl: String,
     val senderId: Long,
-    val Name: String,
-    //TODO
-    val lastMsg:String? = null
-)
-
-@Serializable
-data class GroupListItem(
-    val IconUrl: String,
     val GroupId: Long,
-    val Name: String,
+    val name: String,
+    val listType: ListItemType,
     //TODO
     val lastMsg:String? = null
 )
@@ -25,3 +17,8 @@ data class GroupListItem(
 data class GroupMember(
     val uid:Long
 )
+
+enum class ListItemType{
+    FriendMessage,
+    GroupMessage
+}

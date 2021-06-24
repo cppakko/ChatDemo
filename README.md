@@ -1,6 +1,6 @@
 # ChatDemo
 
-### 100%Compose + Room + Glide(Accompanist) +FontAwesomeCompose
+### 100%Compose + Room + Glide(Accompanist)
 
 ###### ~~写了五分之一不想写了 留下了一堆TODO~~
 

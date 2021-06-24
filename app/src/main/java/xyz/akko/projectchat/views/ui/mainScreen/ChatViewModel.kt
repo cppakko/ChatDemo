@@ -1,4 +1,4 @@
-package xyz.akko.projectchat.views.ui.chatMain
+package xyz.akko.projectchat.views.ui.mainScreen
 
 import android.content.Context
 import androidx.compose.runtime.mutableStateListOf
@@ -9,8 +9,8 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import xyz.akko.projectchat.data.FriendListItem
-import xyz.akko.projectchat.data.GroupListItem
+import xyz.akko.projectchat.data.ListItem
+import xyz.akko.projectchat.data.ListItemType
 import xyz.akko.projectchat.data.MessageTypeEnum
 import xyz.akko.projectchat.data.dao.*
 import xyz.akko.projectchat.utils.UtilObject
@@ -20,11 +20,11 @@ class ChatViewModel : ViewModel() {
     lateinit var db: AppDataBase
 
     //TODO RENAME
-    val switchIndex = mutableStateOf(ConversationNavType.Friends)
+    val switchIndex = mutableStateOf(ListItemType.FriendMessage)
     val connectionStatus = mutableStateOf("")
-    val friendConversationList = mutableStateListOf<FriendListItem>()
+    val friendConversationList = mutableStateListOf<ListItem>()
 
-    val groupConversationList = mutableStateListOf<GroupListItem>()
+    val groupConversationList = mutableStateListOf<ListItem>()
 
     val friendUnreadCountMap = HashMap<Long, MutableLiveData<Int>>()
     val groupUnreadCountMap = HashMap<Long, MutableLiveData<Int>>()
@@ -34,9 +34,7 @@ class ChatViewModel : ViewModel() {
         return if (sharedPreferences.getBoolean("First",true)){
             sharedPreferences.edit().putBoolean("First",false).apply()
             true
-        } else {
-            false
-        }
+        } else false
     }
 
     fun roomInit(uid: Long,context: Context) = viewModelScope.launch(Dispatchers.IO) {
@@ -66,12 +64,12 @@ class ChatViewModel : ViewModel() {
 
         UtilObject.myUser = db.useUser().getByUid(uid)
         for (user in db.useUser().getAll()) {
-            friendConversationList.add(FriendListItem(user.IconUrl,user.uid,user.Name))
+            friendConversationList.add(ListItem(user.IconUrl,user.uid,-1,user.Name,ListItemType.FriendMessage))
         }
 
         for (group in db.useGroup().getAll())
         {
-            groupConversationList.add(GroupListItem(group.IconUrl,group.gid,group.Name))
+            groupConversationList.add(ListItem(group.IconUrl,senderId = -1,group.gid,group.Name,ListItemType.GroupMessage))
         }
 
         /*TEST CODE*/

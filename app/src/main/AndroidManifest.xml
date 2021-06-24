@@ -33,7 +33,7 @@
             android:label="@string/title_activity_conversation_view"
             android:theme="@style/Theme.ProjectChat.NoActionBar" />
         <activity
-            android:name=".views.ui.chatMain.ChatMain"
+            android:name=".views.ui.mainScreen.MainScreen"
             android:exported="true"
             android:label="@string/title_activity_chat_main"
             android:theme="@style/Theme.ProjectChat.NoActionBar" />

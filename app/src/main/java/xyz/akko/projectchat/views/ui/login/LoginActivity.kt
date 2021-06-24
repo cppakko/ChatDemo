@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import xyz.akko.projectchat.views.theme.GreenTheme
 import xyz.akko.projectchat.views.theme.ProjectChatTheme
 import xyz.akko.projectchat.views.ui.BaseAnimatedVisibility
-import xyz.akko.projectchat.views.ui.chatMain.ChatMain
+import xyz.akko.projectchat.views.ui.mainScreen.MainScreen
 
 class LoginActivity : ComponentActivity() {
     @ExperimentalAnimationApi
@@ -35,7 +35,7 @@ class LoginActivity : ComponentActivity() {
             {
                 if (it == true)
                 {
-                    val intent = Intent(this,ChatMain::class.java)
+                    val intent = Intent(this,MainScreen::class.java)
                     intent.putExtra("uid",1234567890L)
                     startActivity(intent)
                     this.finish()

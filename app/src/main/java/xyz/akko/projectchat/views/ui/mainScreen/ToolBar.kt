@@ -1,4 +1,4 @@
-package xyz.akko.projectchat.views.ui.chatMain
+package xyz.akko.projectchat.views.ui.mainScreen
 
 import android.content.Context
 import android.content.Intent

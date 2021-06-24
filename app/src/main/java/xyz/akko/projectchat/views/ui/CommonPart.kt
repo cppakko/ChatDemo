@@ -1,6 +1,5 @@
 package xyz.akko.projectchat.views.ui
 
-import FaIcons
 import androidx.compose.animation.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -18,10 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.guru.fontawesomecomposelib.FaIcon
+import xyz.akko.projectchat.R
 import xyz.akko.projectchat.views.theme.GreenTheme
 import xyz.akko.projectchat.views.theme.green700
 
@@ -61,7 +61,7 @@ fun DeleteMsgButton()
             .width(70.dp),
         colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xffF44336))
     ) {
-        FaIcon(faIcon = FaIcons.Trash)
+        Icon(painter = painterResource(id = R.drawable.ic_baseline_delete_24), contentDescription = "del_icon")
     }
 }
 

@@ -10,20 +10,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import xyz.akko.projectchat.data.FriendListItem
-import xyz.akko.projectchat.data.GroupListItem
 import xyz.akko.projectchat.data.GroupMember
+import xyz.akko.projectchat.data.ListItem
+import xyz.akko.projectchat.data.ListItemType
+import xyz.akko.projectchat.data.ListItemType.FriendMessage
+import xyz.akko.projectchat.data.ListItemType.GroupMessage
 import xyz.akko.projectchat.data.dao.*
 import xyz.akko.projectchat.utils.UtilObject
-import xyz.akko.projectchat.views.ui.chatMain.ConversationNavType
-import xyz.akko.projectchat.views.ui.chatMain.ConversationNavType.Friends
-import xyz.akko.projectchat.views.ui.chatMain.ConversationNavType.Groups
 
 //TODO CLEAN CODE
 class ConversationViewModel : ViewModel() {
-    lateinit var friendConversationInfo: FriendListItem
-    lateinit var groupConversationInfo: GroupListItem
-    lateinit var type: ConversationNavType
+    lateinit var ConversationInfo: ListItem
+    lateinit var type: ListItemType
     lateinit var group: Group
     lateinit var user: User
     var uid: Long = 1L
@@ -40,11 +38,11 @@ class ConversationViewModel : ViewModel() {
     //TODO RENAME
     fun dbInit() = viewModelScope.launch(Dispatchers.IO) {
         when (type) {
-            Friends -> {
-                messageList.addAll(db.useMessage().getMessageByUid(friendConversationInfo.senderId))
-                messageList.addAll(db.useMessage().getMyMessageByUid(friendConversationInfo.senderId, UtilObject.myUid))
+            FriendMessage -> {
+                messageList.addAll(db.useMessage().getMessageByUid(ConversationInfo.senderId))
+                messageList.addAll(db.useMessage().getMyMessageByUid(ConversationInfo.senderId, UtilObject.myUid))
             }
-            Groups -> {
+            GroupMessage -> {
                 groupMessageList.addAll(db.userGroupMessage().getGroupMessageByGid(gid))
             }
         }
@@ -61,8 +59,8 @@ class ConversationViewModel : ViewModel() {
 
     fun userOrGroupInfoInit() = viewModelScope.launch(Dispatchers.IO) {
         when (type) {
-            Friends -> user = db.useUser().getByUid(uid)
-            Groups -> {
+            FriendMessage -> user = db.useUser().getByUid(uid)
+            GroupMessage -> {
                 group = db.useGroup().getByGid(gid)
                 for (user in Json.decodeFromString<List<GroupMember>>(group.memberList)) {
                     groupUserList[user.uid] = db.useUser().getByUid(user.uid)

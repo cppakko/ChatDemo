@@ -28,15 +28,14 @@ import com.google.accompanist.glide.rememberGlidePainter
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import xyz.akko.projectchat.R
-import xyz.akko.projectchat.data.FriendListItem
-import xyz.akko.projectchat.data.GroupListItem
+import xyz.akko.projectchat.data.ListItem
+import xyz.akko.projectchat.data.ListItemType.FriendMessage
+import xyz.akko.projectchat.data.ListItemType.GroupMessage
 import xyz.akko.projectchat.utils.UtilObject
 import xyz.akko.projectchat.views.theme.GreenTheme
 import xyz.akko.projectchat.views.theme.ProjectChatTheme
 import xyz.akko.projectchat.views.theme.defaultChatBackground
-import xyz.akko.projectchat.views.ui.chatMain.ConversationNavType.Friends
-import xyz.akko.projectchat.views.ui.chatMain.ConversationNavType.Groups
-import xyz.akko.projectchat.views.ui.chatMain.INTENT_TAG
+import xyz.akko.projectchat.views.ui.mainScreen.INTENT_TAG
 import xyz.akko.projectchat.views.ui.friendslist.FriendsList
 import xyz.akko.projectchat.views.ui.friendslist.GROUP_GID_TAG
 import xyz.akko.projectchat.views.ui.info.GroupInfo
@@ -57,18 +56,12 @@ class ConversationView : ComponentActivity() {
                 //TODO NULL CHECK
                 val myUid = UtilObject.myUid
                 //TODO NULL CHECK
-                viewModel.type = if (intent.getStringExtra(CURRENT_UID) != null) Friends else Groups
+                viewModel.type = if (intent.getStringExtra(CURRENT_UID) != null) FriendMessage else GroupMessage
+                viewModel.ConversationInfo = intent.getStringExtra(INTENT_TAG)
+                    ?.let { it1 -> Json.decodeFromString<ListItem>(string = it1) }!!
                 when (viewModel.type) {
-                    Friends -> {
-                        viewModel.friendConversationInfo = intent.getStringExtra(INTENT_TAG)
-                            ?.let { it1 -> Json.decodeFromString<FriendListItem>(string = it1) }!!
-                        viewModel.uid = viewModel.friendConversationInfo.senderId
-                    }
-                    Groups -> {
-                        viewModel.groupConversationInfo = intent.getStringExtra(INTENT_TAG)
-                            ?.let { it1 -> Json.decodeFromString<GroupListItem>(string = it1) }!!
-                        viewModel.gid = viewModel.groupConversationInfo.GroupId
-                    }
+                    FriendMessage -> viewModel.uid = viewModel.ConversationInfo.senderId
+                    GroupMessage -> viewModel.gid = viewModel.ConversationInfo.GroupId
                 }
 
                 Scaffold(
@@ -94,12 +87,12 @@ class ConversationView : ComponentActivity() {
                             .background(defaultChatBackground)
                     ) {
                         when (viewModel.type) {
-                            Friends -> {
+                            FriendMessage -> {
                                 items(viewModel.messageList) { item ->
                                     MessageRow(item = item, viewModel = viewModel)
                                 }
                             }
-                            Groups -> {
+                            GroupMessage -> {
                                 items(viewModel.groupMessageList) { item ->
                                     GroupMessageRow(item = item, viewModel = viewModel)
                                 }
@@ -122,11 +115,18 @@ private fun AppTopbar(viewModel: ConversationViewModel) {
     }
     TopAppBar(
         navigationIcon = {
-            when (viewModel.type) {
-                Friends -> if (infoState.value) UserInfo(infoState, user = viewModel.user,context = context)
-                Groups -> { if (infoState.value) GroupInfo(state = infoState, group = viewModel.group,
-                    groupUserList = viewModel.groupUserList
-                ) }
+            if (infoState.value){
+                when (viewModel.type){
+                    FriendMessage -> UserInfo(
+                        infoState,
+                        user = viewModel.user,
+                        context = context
+                    )
+                    GroupMessage -> GroupInfo(
+                        state = infoState, group = viewModel.group,
+                        groupUserList = viewModel.groupUserList
+                    )
+                }
             }
             IconButton(onClick = { (context as Activity).finish() }) {
                 Icon(
@@ -142,17 +142,19 @@ private fun AppTopbar(viewModel: ConversationViewModel) {
                     contentDescription = "more_button"
                 )
             }
-            DropdownMenu(expanded = viewModel.dropDownMenuState.value, onDismissRequest = { viewModel.dropDownMenuState.value = false }) {
+            DropdownMenu(
+                expanded = viewModel.dropDownMenuState.value,
+                onDismissRequest = { viewModel.dropDownMenuState.value = false }) {
                 DropdownMenuItem(onClick = {
                     /*TODO*/
-                    Toast.makeText(context,"TODO",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "TODO", Toast.LENGTH_SHORT).show()
                 }) {
                     Text(text = "清空聊天记录")
                 }
-                if (viewModel.type == Groups) {
+                if (viewModel.type == GroupMessage) {
                     DropdownMenuItem(onClick = {
-                        val intent = Intent(context,FriendsList::class.java)
-                        intent.putExtra(GROUP_GID_TAG,viewModel.gid)
+                        val intent = Intent(context, FriendsList::class.java)
+                        intent.putExtra(GROUP_GID_TAG, viewModel.gid)
                         context.startActivity(intent)
                     }) {
                         Text(text = "群员列表")
@@ -163,10 +165,7 @@ private fun AppTopbar(viewModel: ConversationViewModel) {
         title = {
             Image(
                 painter = rememberGlidePainter(
-                    request = when (viewModel.type) {
-                        Friends -> viewModel.friendConversationInfo.IconUrl
-                        Groups -> viewModel.groupConversationInfo.IconUrl
-                    }
+                    request = viewModel.ConversationInfo.IconUrl
                 ),
                 contentDescription = "user_icon",
                 modifier = Modifier
@@ -185,10 +184,7 @@ private fun AppTopbar(viewModel: ConversationViewModel) {
             )
             Spacer(modifier = Modifier.padding(start = 10.dp))
             Text(
-                text = when (viewModel.type) {
-                    Friends -> viewModel.friendConversationInfo.Name
-                    Groups -> viewModel.groupConversationInfo.Name
-                }
+                text = viewModel.ConversationInfo.name
             )
         }
     )

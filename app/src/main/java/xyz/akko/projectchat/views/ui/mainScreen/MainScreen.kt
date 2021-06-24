@@ -1,6 +1,6 @@
-package xyz.akko.projectchat.views.ui.chatMain
+package xyz.akko.projectchat.views.ui.mainScreen
 
-import FaIcons
+import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import androidx.activity.ComponentActivity
@@ -11,34 +11,37 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.guru.fontawesomecomposelib.FaIcon
-import kotlinx.coroutines.runBlocking
+import xyz.akko.projectchat.R
+import xyz.akko.projectchat.data.ListItemType.*
 import xyz.akko.projectchat.utils.UtilObject
 import xyz.akko.projectchat.views.theme.ProjectChatTheme
-import xyz.akko.projectchat.views.ui.chatMain.ConversationNavType.Friends
-import xyz.akko.projectchat.views.ui.chatMain.ConversationNavType.Groups
 
-//TODO RENAME
-class ChatMain : ComponentActivity() {
+class MainScreen : ComponentActivity() {
 
     @ExperimentalAnimationApi
     @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val dm = DisplayMetrics()
-        //TODO SDK30+时使用新方法
-        windowManager.defaultDisplay.getMetrics(dm)
+
+        val deviceWidth = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val metrics = windowManager.currentWindowMetrics
+            (metrics.bounds.width() / this.resources.displayMetrics.density).dp
+        } else {
+            val dm = DisplayMetrics()
+            windowManager.defaultDisplay.getMetrics(dm)
+            (dm.widthPixels / dm.density).dp
+        }
         setContent {
             ProjectChatTheme {
                 val scope = rememberCoroutineScope()
-                val deviceWidth = dm.widthPixels / dm.density
                 //TODO CLEAN CODE
-                val viewModel:ChatViewModel = viewModel()
-                val uid = intent.getLongExtra("uid",1000L)
+                val viewModel: ChatViewModel = viewModel()
+                val uid = intent.getLongExtra("uid", 1000L)
                 UtilObject.myUid = uid
-                viewModel.roomInit(uid,this@ChatMain)
+                viewModel.roomInit(uid, this@MainScreen)
 
                 Scaffold(
                     topBar = { ToolBar(scope, viewModel, this) }
@@ -46,21 +49,19 @@ class ChatMain : ComponentActivity() {
                     Column {
                         TabRow(viewModel)
                         Column(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .fillMaxWidth()
+                            modifier = Modifier.fillMaxSize()
                         ) {
                             Crossfade(targetState = viewModel.switchIndex.value) {
                                 when (it) {
-                                    Friends -> ConversationNav().View(
+                                    FriendMessage -> ConversationNav().View(
                                         viewModel,
                                         deviceWidth,
-                                        ConversationNavType.valueOf("Friends")
+                                        FriendMessage
                                     )
-                                    Groups -> ConversationNav().View(
+                                    GroupMessage -> ConversationNav().View(
                                         viewModel,
                                         deviceWidth,
-                                        ConversationNavType.valueOf("Groups")
+                                        GroupMessage
                                     )
                                 }
                             }
@@ -78,34 +79,25 @@ class ChatMain : ComponentActivity() {
             selectedTabIndex = viewModel.switchIndex.value.ordinal,
             modifier = Modifier.height(50.dp)
         ) {
-            //TODO 优化协程
             Tab(
-                selected = viewModel.switchIndex.value.String == "Friends",
+                selected = viewModel.switchIndex.value == FriendMessage,
                 onClick = {
-                    runBlocking {
-                        viewModel.switchIndex.value = Friends
-                    }
-                },
-            ) {
-                Row {
-                    FaIcon(faIcon = FaIcons.UserFriends)
-                }
+                    viewModel.switchIndex.value = FriendMessage
+                }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_baseline_person_24),
+                    contentDescription = "person_icon"
+                )
             }
-            //TODO 优化协程
-            Tab(selected = viewModel.switchIndex.value.String == "Groups", onClick = {
-                runBlocking {
-                    viewModel.switchIndex.value = Groups
-                }
-            }) {
-                Row {
-                    FaIcon(faIcon = FaIcons.Users)
-                }
+            Tab(selected = viewModel.switchIndex.value == GroupMessage,
+                onClick = {
+                    viewModel.switchIndex.value = GroupMessage
+                }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_baseline_group_24),
+                    contentDescription = "group_icon"
+                )
             }
         }
     }
-}
-
-enum class ConversationNavType(val String: String) {
-    Friends("Friends"),
-    Groups("Groups")
 }

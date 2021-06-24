@@ -116,7 +116,7 @@ fun MessageRow(item: MessageEntity, viewModel: ConversationViewModel) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painter = rememberGlidePainter(request = viewModel.friendConversationInfo.IconUrl),
+                    painter = rememberGlidePainter(request = viewModel.ConversationInfo.IconUrl),
                     contentDescription = "user_icon",
                     modifier = Modifier
                         .size(60.dp)
@@ -134,7 +134,7 @@ fun MessageRow(item: MessageEntity, viewModel: ConversationViewModel) {
                         )
                 )
                 Column {
-                    Text(text = viewModel.friendConversationInfo.Name )
+                    Text(text = viewModel.ConversationInfo.name )
                     when (item.type) {
                         StringMessage -> {
                             CustomLongClickButton(item = item, content = {
